@@ -7,6 +7,7 @@ import LoginPage from './features/login/LoginPage'
 import PublicLandingPage from './features/public-landing/PublicLandingPage'
 import RecoverPasswordPage from './features/recover-password/RecoverPasswordPage'
 import TrainingsPage from './features/trainings/TrainingsPage'
+import { isMockAuthenticated } from './lib/mockAuth'
 
 function publicNavClassName(isActive: boolean): string {
   const base = 'text-xs font-semibold transition md:text-sm'
@@ -41,10 +42,10 @@ function AppLayout() {
 
       <Routes>
         <Route path="/" element={<PublicLandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={isMockAuthenticated() ? <Navigate to="/home-manager" replace /> : <LoginPage />} />
         <Route path="/recover-password" element={<RecoverPasswordPage />} />
 
-        <Route element={<BackOfficeLayout />}>
+        <Route element={isMockAuthenticated() ? <BackOfficeLayout /> : <Navigate to="/login" replace />}>
           <Route path="/home-manager" element={<HomeManagerPage />} />
           <Route path="/athletes" element={<AthletesPage />} />
           <Route path="/trainings" element={<TrainingsPage />} />

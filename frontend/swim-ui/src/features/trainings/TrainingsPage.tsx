@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { apiErrorMessage, apiRequest, isConnectionError } from '../../lib/api'
+import { apiErrorMessage, apiRequest } from '../../lib/api'
 
 type Season = {
   public_id: string
@@ -63,6 +63,7 @@ export default function TrainingsPage() {
   const [venues, setVenues] = useState<Venue[]>([])
   const [form, setForm] = useState<TrainingFormState>(INITIAL_FORM)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState('')
   const [feedback, setFeedback] = useState('')
 
   async function loadTrainings() {
@@ -75,6 +76,7 @@ export default function TrainingsPage() {
 
     async function load() {
       setLoading(true)
+      setLoadError('')
       setFeedback('')
       try {
         const [trainingData, seasonData, coachData, athleteData, venueData] = await Promise.all([
@@ -96,9 +98,7 @@ export default function TrainingsPage() {
         setVenues(venueData)
       } catch (error) {
         if (alive) {
-          if (!isConnectionError(error)) {
-            setFeedback(apiErrorMessage(error))
-          }
+          setLoadError(apiErrorMessage(error))
         }
       } finally {
         if (alive) {
@@ -127,6 +127,7 @@ export default function TrainingsPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setLoading(true)
+    setLoadError('')
     setFeedback('')
 
     try {
@@ -149,13 +150,13 @@ export default function TrainingsPage() {
       setForm(INITIAL_FORM)
       await loadTrainings()
     } catch (error) {
-      if (!isConnectionError(error)) {
-        setFeedback(apiErrorMessage(error))
-      }
+      setFeedback(apiErrorMessage(error))
     } finally {
       setLoading(false)
     }
   }
+
+  const hasEmptyLookups = !loading && !loadError && (seasons.length === 0 || athletes.length === 0 || coaches.length === 0 || venues.length === 0)
 
   return (
     <main className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-6 py-8 md:px-10">
@@ -164,8 +165,18 @@ export default function TrainingsPage() {
         <p className="mt-1 text-sm text-slate-600">Crea sesiones con season, coaches, athletes y venue.</p>
       </header>
 
+      {loadError ? (
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</p>
+      ) : null}
+
       {feedback ? (
         <p className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700">{feedback}</p>
+      ) : null}
+
+      {hasEmptyLookups ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Faltan datos base para algunos selectores (seasons/coaches/athletes/venues). Si esperabas datos, revisa migraciones y fixtures.
+        </p>
       ) : null}
 
       <section className="grid gap-6 lg:grid-cols-[1fr_1fr]">
@@ -173,6 +184,9 @@ export default function TrainingsPage() {
           <h2 className="text-lg font-bold text-slate-900">Entrenamientos ({trainings.length})</h2>
 
           {loading && trainings.length === 0 ? <p className="mt-3 text-sm text-slate-500">Cargando...</p> : null}
+          {!loading && !loadError && trainings.length === 0 ? (
+            <p className="mt-3 text-sm text-slate-600">No hay entrenamientos registrados todavia.</p>
+          ) : null}
 
           <ul className="mt-4 space-y-2">
             {trainings.map((training) => (

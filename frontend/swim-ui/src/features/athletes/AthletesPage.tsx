@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { apiErrorMessage, apiRequest, isConnectionError } from '../../lib/api'
+import { apiErrorMessage, apiRequest } from '../../lib/api'
 
 type AthleteListItem = {
   public_id: string
@@ -67,6 +67,7 @@ export default function AthletesPage() {
   const [form, setForm] = useState<AthleteFormState>(INITIAL_FORM)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [loadError, setLoadError] = useState<string>('')
   const [feedback, setFeedback] = useState<string>('')
 
   const pageTitle = useMemo(() => {
@@ -88,14 +89,13 @@ export default function AthletesPage() {
 
     async function load() {
       setLoading(true)
+      setLoadError('')
       setFeedback('')
       try {
         await Promise.all([loadAthletes(), loadAddresses()])
       } catch (error) {
         if (alive) {
-          if (!isConnectionError(error)) {
-            setFeedback(apiErrorMessage(error))
-          }
+          setLoadError(apiErrorMessage(error))
         }
       } finally {
         if (alive) {
@@ -134,9 +134,7 @@ export default function AthletesPage() {
       })
       setEditingId(publicId)
     } catch (error) {
-      if (!isConnectionError(error)) {
-        setFeedback(apiErrorMessage(error))
-      }
+      setFeedback(apiErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -145,6 +143,7 @@ export default function AthletesPage() {
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setLoading(true)
+    setLoadError('')
     setFeedback('')
 
     const payload = {
@@ -177,9 +176,7 @@ export default function AthletesPage() {
       await loadAthletes()
       resetForm()
     } catch (error) {
-      if (!isConnectionError(error)) {
-        setFeedback(apiErrorMessage(error))
-      }
+      setFeedback(apiErrorMessage(error))
     } finally {
       setLoading(false)
     }
@@ -192,6 +189,10 @@ export default function AthletesPage() {
         <p className="mt-1 text-sm text-slate-600">Listado, creacion y edicion con selector de direccion.</p>
       </header>
 
+      {loadError ? (
+        <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{loadError}</p>
+      ) : null}
+
       {feedback ? (
         <p className="rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-700">{feedback}</p>
       ) : null}
@@ -201,6 +202,9 @@ export default function AthletesPage() {
           <h2 className="text-lg font-bold text-slate-900">Atletas ({athletes.length})</h2>
 
           {loading && athletes.length === 0 ? <p className="mt-3 text-sm text-slate-500">Cargando...</p> : null}
+          {!loading && !loadError && athletes.length === 0 ? (
+            <p className="mt-3 text-sm text-slate-600">No hay atletas cargados todavia. Si esperabas datos, revisa fixtures del backend.</p>
+          ) : null}
 
           <ul className="mt-4 space-y-2">
             {athletes.map((athlete) => (
@@ -304,6 +308,10 @@ export default function AthletesPage() {
                 </option>
               ))}
             </select>
+
+            {!loading && !loadError && addresses.length === 0 ? (
+              <p className="text-xs text-slate-600">No hay direcciones disponibles. Carga fixtures para habilitar el selector.</p>
+            ) : null}
 
             <div className="flex gap-2">
               <button

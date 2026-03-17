@@ -1,4 +1,4 @@
-const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost/api/v1').replace(/\/$/, '')
+const API_BASE = (import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:8000/api/v1').replace(/\/$/, '')
 
 export class ApiError extends Error {
   status: number
@@ -62,10 +62,20 @@ export function apiErrorMessage(error: unknown): string {
       }
       return 'Validacion fallida (422). Revisa los campos del formulario.'
     }
+    if (error.status >= 500) {
+      const detailText = typeof error.detail === 'string' ? error.detail : ''
+      if (/relation\s+"[^"]+"\s+does not exist/i.test(detailText)) {
+        return 'La base de datos no esta preparada (faltan tablas). Ejecuta migrate y carga fixtures del backend.'
+      }
+      return 'Error interno del servidor (500). Revisa backend y logs.'
+    }
     return `Error HTTP ${error.status}.`
   }
 
   if (error instanceof Error) {
+    if (isConnectionError(error)) {
+      return `No se pudo conectar con la API (${API_BASE}). Revisa backend, puerto y VITE_API_BASE_URL.`
+    }
     return error.message
   }
 

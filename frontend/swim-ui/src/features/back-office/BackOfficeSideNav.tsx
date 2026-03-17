@@ -1,6 +1,7 @@
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { ACTIVE_BACKOFFICE_NAV, PASSIVE_BACKOFFICE_NAV } from './backOfficeNav'
+import { logoutMockSession } from '../../lib/mockAuth'
 
 function activeNavClassName(isActive: boolean): string {
   const base = 'flex items-center justify-between rounded-lg px-3 py-2 text-sm font-semibold transition'
@@ -10,6 +11,13 @@ function activeNavClassName(isActive: boolean): string {
 }
 
 export default function BackOfficeSideNav() {
+  const navigate = useNavigate()
+
+  function onLogout() {
+    logoutMockSession()
+    navigate('/', { replace: true })
+  }
+
   return (
     <aside className="w-full border-b border-[var(--color-border)] bg-white/90 px-4 py-4 backdrop-blur lg:sticky lg:top-0 lg:h-screen lg:w-72 lg:shrink-0 lg:border-r lg:border-b-0 lg:px-5 lg:py-6">
       <div className="flex h-full flex-col">
@@ -53,6 +61,13 @@ export default function BackOfficeSideNav() {
           <footer className="mt-4 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-3">
             <p className="text-sm font-semibold text-[var(--color-brand-deep)]">Olivia Rios</p>
             <p className="text-xs text-[var(--color-text-muted)]">olivia@swimmanager.com</p>
+            <button
+              type="button"
+              onClick={onLogout}
+              className="mt-3 w-full rounded-lg border border-[var(--color-border)] bg-white px-3 py-2 text-xs font-semibold text-[var(--color-brand-deep)] transition hover:border-[var(--color-brand-primary)]"
+            >
+              Cerrar sesion demo
+            </button>
           </footer>
         </div>
       </div>

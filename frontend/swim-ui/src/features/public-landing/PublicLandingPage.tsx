@@ -23,10 +23,10 @@ export default function PublicLandingPage() {
         <section className="grid flex-1 items-center gap-10 py-8 md:grid-cols-[1.1fr_0.9fr] md:py-14">
           <div className="max-w-2xl">
             <h1 className="text-5xl font-black leading-tight text-[var(--color-brand-deep)] md:text-6xl">
-              Tu pasion, tu progreso, tu comunidad
+              Tu pasión, tu progreso, tu comunidad
             </h1>
             <p className="mt-5 max-w-xl text-base text-[var(--color-text-muted)] md:text-lg">
-              Todo lo que necesitas para vivir el deporte esta en tu Club [Nombre del Club].
+              Todo lo que necesitas para vivir el deporte esta en tu Club.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
