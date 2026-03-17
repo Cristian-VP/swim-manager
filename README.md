@@ -80,11 +80,8 @@ Nota: se usa `npm --prefix` para evitar problemas de directorio actual cuando ha
 
 ### 6) Configurar URL de la API para Vite
 
-Crear archivo `frontend/swim-ui/.env`:
+Crear archivo `swim-manager/.env`:
 
-```bash
-VITE_API_BASE_URL=http://localhost:8000/api/v1
-```
 
 ### 7) Ejecutar frontend en desarrollo
 
@@ -94,23 +91,9 @@ npm --prefix /home/tian/Documentos/FP/diseño/swim-manager/frontend/swim-ui run 
 
 Abrir la URL que muestre Vite (habitualmente `http://localhost:5173`).
 
-## Verificaciones recomendadas
-
-### Build de produccion
-
-```bash
-npm --prefix /home/tian/Documentos/FP/diseño/swim-manager/frontend/swim-ui run build
-```
-
-### Lint
-
-```bash
-npm --prefix /home/tian/Documentos/FP/diseño/swim-manager/frontend/swim-ui run lint
-```
 
 ## Contexto para correccion
 
 1. La app frontend consume endpoints reales de Django Ninja y refleja errores `404`, `409` y `422` en interfaz.
 2. Login es deliberadamente UI-only en esta iteracion.
-3. La evidencia de analisis y planificacion se mantiene en `frontend/swim-ui/docs`.
-4. El trabajo de competiciones se deja documentado para iteracion 2.
+
