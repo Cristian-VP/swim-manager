@@ -6,16 +6,31 @@
   --font-heading: 'Space Grotesk', 'Avenir Next', sans-serif;
 }
 
+:root {
+  --color-brand-primary: #0055ff;
+  --color-brand-primary-hover: #1469e6;
+  --color-brand-primary-soft: #d9e5ff;
+  --color-brand-deep: #2f2d5a;
+  --color-brand-accent: #ec6279;
+  --color-brand-warm: #ffb070;
+  --color-brand-mint: #93f0e2;
+  --color-surface: #f5f5f5;
+  --color-surface-card: #ffffff;
+  --color-border: #d0d0d0;
+  --color-text: #111111;
+  --color-text-muted: #555d66;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
   font-family: var(--font-sans);
   background:
-    radial-gradient(circle at 12% 10%, rgba(125, 211, 252, 0.28), transparent 34%),
-    radial-gradient(circle at 86% 14%, rgba(253, 186, 116, 0.28), transparent 40%),
-    radial-gradient(circle at 40% 90%, rgba(147, 197, 253, 0.22), transparent 35%),
-    #f8fafc;
-  color: #0f172a;
+    radial-gradient(circle at 12% 10%, rgba(128, 170, 254, 0.22), transparent 34%),
+    radial-gradient(circle at 86% 14%, rgba(255, 176, 112, 0.2), transparent 40%),
+    radial-gradient(circle at 40% 90%, rgba(147, 240, 226, 0.16), transparent 35%),
+    var(--color-surface);
+  color: var(--color-text);
 }
 
 h1,

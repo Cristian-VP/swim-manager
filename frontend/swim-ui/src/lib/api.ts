@@ -71,3 +71,15 @@ export function apiErrorMessage(error: unknown): string {
 
   return 'Ocurrio un error inesperado.'
 }
+
+export function isConnectionError(error: unknown): boolean {
+  if (error instanceof ApiError) {
+    return false
+  }
+
+  if (error instanceof Error) {
+    return /NetworkError when attempting to fetch resource|Failed to fetch|Load failed/i.test(error.message)
+  }
+
+  return false
+}

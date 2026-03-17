@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { apiErrorMessage, apiRequest } from '../../lib/api'
+import { apiErrorMessage, apiRequest, isConnectionError } from '../../lib/api'
 
 type Season = {
   public_id: string
@@ -96,7 +96,9 @@ export default function TrainingsPage() {
         setVenues(venueData)
       } catch (error) {
         if (alive) {
-          setFeedback(apiErrorMessage(error))
+          if (!isConnectionError(error)) {
+            setFeedback(apiErrorMessage(error))
+          }
         }
       } finally {
         if (alive) {
@@ -147,7 +149,9 @@ export default function TrainingsPage() {
       setForm(INITIAL_FORM)
       await loadTrainings()
     } catch (error) {
-      setFeedback(apiErrorMessage(error))
+      if (!isConnectionError(error)) {
+        setFeedback(apiErrorMessage(error))
+      }
     } finally {
       setLoading(false)
     }

@@ -4,7 +4,7 @@ Frontend de la iteracion 1 para consumir la API de `sportsclub`.
 
 Alcance implementado:
 
-1. Landing page.
+1. Home page.
 2. Login UI-only (sin autenticacion backend en esta iteracion).
 3. Gestion de atletas (listar, crear, editar, selector de direccion).
 4. Programacion de entrenamientos (listar y crear con relaciones).

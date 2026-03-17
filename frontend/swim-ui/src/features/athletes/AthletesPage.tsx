@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 
-import { apiErrorMessage, apiRequest } from '../../lib/api'
+import { apiErrorMessage, apiRequest, isConnectionError } from '../../lib/api'
 
 type AthleteListItem = {
   public_id: string
@@ -93,7 +93,9 @@ export default function AthletesPage() {
         await Promise.all([loadAthletes(), loadAddresses()])
       } catch (error) {
         if (alive) {
-          setFeedback(apiErrorMessage(error))
+          if (!isConnectionError(error)) {
+            setFeedback(apiErrorMessage(error))
+          }
         }
       } finally {
         if (alive) {
@@ -132,7 +134,9 @@ export default function AthletesPage() {
       })
       setEditingId(publicId)
     } catch (error) {
-      setFeedback(apiErrorMessage(error))
+      if (!isConnectionError(error)) {
+        setFeedback(apiErrorMessage(error))
+      }
     } finally {
       setLoading(false)
     }
@@ -173,7 +177,9 @@ export default function AthletesPage() {
       await loadAthletes()
       resetForm()
     } catch (error) {
-      setFeedback(apiErrorMessage(error))
+      if (!isConnectionError(error)) {
+        setFeedback(apiErrorMessage(error))
+      }
     } finally {
       setLoading(false)
     }
