@@ -23,11 +23,10 @@ Fuera de alcance en iteracion 1:
 
 ## Arranque desde cero
 
-### 1) Clonar y posicionarse en el proyecto
+### 1) Clonar
 
 ```bash
 git clone <url-del-repo>
-cd swim-manager
 ```
 
 ### 2) Instalar dependencias Python
@@ -46,7 +45,7 @@ API esperada tras levantar contenedores:
 
 `http://localhost:8000/api/v1`
 
-### 4) Preparar base de datos y datos de prueba
+### 4) Ejecutar migraciones y queries para los datos de prueba
 
 En una terminal aparte:
 
@@ -66,27 +65,25 @@ cd ..
 
 Alternativa equivalente:
 
-```bash
-make load-fixtures
-```
 
 ### 5) Instalar dependencias del frontend
 
 ```bash
-npm --prefix /home/tian/Documentos/FP/diseño/swim-manager/frontend/swim-ui install
+cd frontend/swim-ui
+npm install
 ```
 
-Nota: se usa `npm --prefix` para evitar problemas de directorio actual cuando hay varias terminales abiertas.
 
 ### 6) Configurar URL de la API para Vite
 
-Crear archivo `swim-manager/.env`:
+Crear archivo `.env` siguiendo el ejemplo de env.example
 
 
 ### 7) Ejecutar frontend en desarrollo
 
 ```bash
-npm --prefix /home/tian/Documentos/FP/diseño/swim-manager/frontend/swim-ui run dev
+cd frontend/swim-ui
+npm run dev
 ```
 
 Abrir la URL que muestre Vite (habitualmente `http://localhost:5173`).
@@ -94,6 +91,10 @@ Abrir la URL que muestre Vite (habitualmente `http://localhost:5173`).
 
 ## Contexto para correccion
 
-1. La app frontend consume endpoints reales de Django Ninja y refleja errores `404`, `409` y `422` en interfaz.
-2. Login es deliberadamente UI-only en esta iteracion.
+1. La app frontend consume endpoints reales de Django creados en sprotclub/ y refleja errores `404`, `409` y `422` en interfaz.
+2. Login no implementado, unicamente UI-only en esta iteracion.
+3.User case que se han cubierto son: acceso a back office desde landing (pseudo login), acesso a Athletes, acceso a Trainings. 
+4. Se ha tomado como base los wireframes ejecutados en los ejercicios anteriores. 
+5. El resto de acciones están deshabilitada.
+
 
