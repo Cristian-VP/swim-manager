@@ -1,100 +1,61 @@
-# Swim UI (React + TypeScript + Tailwind v4)
+Objective: Upgrade your static prototype into a dynamic, multi-page React application. You will connect your UI to the local Athletics Sports Club REST API, handle asynchronous data fetching, manage loading and error states, and implement routing.
 
-Frontend de la iteracion 1 para consumir la API de `sportsclub`.
+1. Planning and design setup
 
-Alcance implementado:
+Go through the following steps before you start coding.
 
-1. Home page.
-2. Login UI-only (sin autenticacion backend en esta iteracion).
-3. Gestion de atletas (listar, crear, editar, selector de direccion).
-4. Programacion de entrenamientos (listar y crear con relaciones).
+User stories and mock-ups.
 
-Fuera de alcance en iteracion 1:
+Your application must now represent the UI for exactly four user stories. Reuse your stories from phase 1 and create the necessary new ones to reach four. For the new stories, deliver the same visual assets as before:
 
-1. Dashboard de competiciones.
-2. Edicion de resultados/puntuaciones.
-
-## Requisitos previos
-
-1. `git`.
-2. `python` y `pip`.
-3. `docker` y `docker compose`.
-4. `node` y `npm`.
-
-## Arranque desde cero
-
-### 1) Clonar
-
-```bash
-git clone <url-del-repo>
-```
-
-### 2) Instalar dependencias Python
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3) Levantar backend con Docker
-
-```bash
-docker compose up -d
-```
-
-API esperada tras levantar contenedores:
-
-`http://localhost:8000/api/v1`
-
-### 4) Ejecutar migraciones y queries para los datos de prueba
-
-En una terminal aparte:
-
-```bash
-cd sportsclub
-python manage.py migrate
-python manage.py loaddata \
-  core/fixtures/addresses.json \
-  inventory/fixtures/venues.json \
-  people/fixtures/coaches.json \
-  people/fixtures/athletes.json \
-  scheduling/fixtures/seasons.json \
-  scheduling/fixtures/competitions.json \
-  scheduling/fixtures/trainings.json
-cd ..
-```
-
-Alternativa equivalente:
+    Set the title using the format "As a [persona], I want [goal] so that [benefit]."
+    Define a workflow that solves it. Include forks, arrows, error messages, cancellations, and alternative endings.
+    Create the mock-up representing the steps the user follows to achieve it, and use arrows to define the flow. Use labels to highlight relevant details.
+    Format: Delivered as a single file (image or vector) per story.
 
 
-### 5) Instalar dependencias del frontend
 
-```bash
-cd frontend/swim-ui
-npm install
-```
+2. Technical requirements
 
+Your work must meet the following technical requirements:
 
-### 6) Configurar URL de la API para Vite
+API Integration (GET requests only).
 
-Crear archivo `.env` siguiendo el ejemplo de env.example
+You must run the provided Athletics Sports Club API locally using Docker Compose. Replace your previous static JSON imports with the fetch() API to retrieve real data from the backend. Focus strictly on *implementing the read-only parts* of your user stories. For now, focus on presenting the data.
 
+Endpoints.
 
-### 7) Ejecutar frontend en desarrollo
+You must use all the necessary GET endpoints required to completely fulfill the read operations for your 4 user stories. Available endpoint bases include /athletes, /coaches, /venues, /competitions, /trainings, /seasons, and /addresses. You should utilise both list endpoints (e.g., /api/v1/athletes) and detail endpoints (e.g., /api/v1/athletes/{public_id}) as dictated by your designs.
 
-```bash
-cd frontend/swim-ui
-npm run dev
-```
+Component expansion.
 
-Abrir la URL que muestre Vite (habitualmente `http://localhost:5173`).
+Add at least 3 new functional components to your project to accommodate the new user stories and data presentation.
 
+State and asynchrony.
 
-## Contexto para correccion
+Use useEffect and useState, add loading and error states:
 
-1. La app frontend consume endpoints reales de Django creados en sprotclub/ y refleja errores `404`, `409` y `422` en interfaz.
-2. Login no implementado, unicamente UI-only en esta iteracion.
-3.User case que se han cubierto son: acceso a back office desde landing (pseudo login), acesso a Athletes, acceso a Trainings. 
-4. Se ha tomado como base los wireframes ejecutados en los ejercicios anteriores. 
-5. El resto de acciones están deshabilitada.
+    Use useEffect to trigger your fetch calls when the relevant components mount.
+    Use useState to store the incoming JSON data.
+    You must implement a loading state (e.g., showing a spinner, skeleton loader, or "Loading..." text while waiting for the API response) and an error state (e.g., a gracefully designed error message if the fetch fails or the Docker container is not running).
 
+Mandatory routing.
 
+Implement react-router-dom to create actual navigation. Your app must have at least two distinct views (e.g., a global navigation bar that switches between /athletes and /competitions, or clicking on a list item to navigate to a detail page).
+
+Component quality and clean code.
+
+React code must follow industry best practices for readability and separation of concerns.
+
+    No spaguetti code. Do not put all your logic, styling, and UI into a single massive component. Break complex UIs into smaller, reusable child components.
+    Keep JSX clean. The return (...) block of your component should primarily contain UI. Complex JavaScript logic, data filtering, and event handler functions should be defined above the return statement.
+    Styling practices. Avoid heavy use of inline styles, e.g., style={{ color: 'red', margin: '10px' }}. Use standard external CSS files, CSS modules, or a consistent styling framework to keep your component files clean.
+    Semantic HTML. Avoid a div soup. Use semantic HTML tags (<header>, <main>, <section>, <nav>, <button>) inside your JSX.
+
+## Data quiality requirements
+
+- Successfully adds 3 or more new functional components. Maintains excellent, modular structure and clear separation of concerns across the whole app.
+- Seamlessly replaces mock data with fetch() GET requests across all necessary endpoints. Correctly extracts and utilizes the JSON data from the responses.
+- Gracefully handles both Loading (spinners, skeletons) and Error states (friendly messages if the API is down) using useState in the relevant components.
+- App runs flawlessly following the updated README.md. ZIP strictly excludes node_modules and files are named perfectly.
+- Code is generally well-structured. A few components might be slightly too long, or there is minor use of inline styling, but it remains readable and easy to follow.
