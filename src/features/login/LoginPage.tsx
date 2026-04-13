@@ -54,7 +54,7 @@ export default function LoginPage() {
     <main className="mx-auto w-full max-w-md px-6 py-10 md:py-14">
       <section className="rounded-3xl border border-[var(--color-border)] bg-white p-6 shadow-sm md:p-8">
         <h1 className="text-3xl font-black text-[var(--color-brand-deep)]">Login</h1>
-        <p className="mt-2 text-sm text-[var(--color-text-muted)]">Pseudo-login demo. No integra autenticacion backend en iteracion 1.</p>
+        <p className="mt-2 text-sm text-[var(--color-text-muted)]">Pseudo-login demo. No integra autenticacion backend.</p>
         <p className="mt-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-surface)] px-3 py-2 text-xs text-[var(--color-text-muted)]">
           Demo user: <span className="font-semibold text-[var(--color-brand-deep)]">{DEMO_USER.email}</span> /{' '}
           <span className="font-semibold text-[var(--color-brand-deep)]">{DEMO_USER.password}</span>
