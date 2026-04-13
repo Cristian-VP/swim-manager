@@ -65,16 +65,16 @@ export function apiErrorMessage(error: unknown): string {
     if (error.status >= 500) {
       const detailText = typeof error.detail === 'string' ? error.detail : ''
       if (/relation\s+"[^"]+"\s+does not exist/i.test(detailText)) {
-        return 'La base de datos no esta preparada (faltan tablas). Ejecuta migrate y carga fixtures del backend.'
+        return 'La base de datos no esta preparada (faltan tablas)'
       }
-      return 'Error interno del servidor (500). Revisa backend y logs.'
+      return 'Error interno del servidor (500)'
     }
     return `Error HTTP ${error.status}.`
   }
 
   if (error instanceof Error) {
     if (isConnectionError(error)) {
-      return `No se pudo conectar con la API (${API_BASE}). Revisa backend, puerto y VITE_API_BASE_URL.`
+      return `No se pudo conectar con la API (${API_BASE}).`
     }
     return error.message
   }
