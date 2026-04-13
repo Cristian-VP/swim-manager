@@ -1,61 +1,76 @@
-Objective: Upgrade your static prototype into a dynamic, multi-page React application. You will connect your UI to the local Athletics Sports Club REST API, handle asynchronous data fetching, manage loading and error states, and implement routing.
+# Swim Manager Front-Office
 
-1. Planning and design setup
+## Introducción
+Swim Manager, es una herramienta administrativa enfocada dentro del caso práctico *Athletics Sports Club API*. En esta entrega correspondiente a la **Iteración 2**, se encuentra desarrollada en React (Vite) aplicando un enfoque exclusivo a las vistas de solo lectura (**GET requests only**).
 
-Go through the following steps before you start coding.
+## Requisitos Previos 
+Asegúrate de tener instaladas las siguientes herramientas en tu sistema operativo:
+- [Node.js](https://nodejs.org/) (Versión 18+ recomendada)
+- `npm` (gestor de dependencias integrado con Node.js)
+- [Docker](https://www.docker.com/) y `docker-compose` (necesarios para aprovisionar el servidor backend de la API provista).
 
-User stories and mock-ups.
+---
 
-Your application must now represent the UI for exactly four user stories. Reuse your stories from phase 1 and create the necessary new ones to reach four. For the new stories, deliver the same visual assets as before:
+## Pasos para la carga y ejecución local
 
-    Set the title using the format "As a [persona], I want [goal] so that [benefit]."
-    Define a workflow that solves it. Include forks, arrows, error messages, cancellations, and alternative endings.
-    Create the mock-up representing the steps the user follows to achieve it, and use arrows to define the flow. Use labels to highlight relevant details.
-    Format: Delivered as a single file (image or vector) per story.
+Para probar este código partiendo de cero, el desarrollador (o evaluador) debe realizar los siguientes pasos:
+
+Para que la interfaz de la aplicación pueda cargar datos reales (y no marcadores como "Falta por implementar"), debes mantener encendida la API oficial adjunta al caso del Club.
+
+*(Nota: El frontend está configurado asumiendo que la API queda escuchando en el puerto base `http://localhost:8000/api/v1`)*.
+
+### 1. Iniciar el entorno Frontend
+```bash
+# 1. Accede a la raíz de este proyecto Frontend
+cd /ruta/hacia/swim-manager
+
+# 2. Instala todas las librerías y dependencias necesarias listadas en package.json
+npm install
+
+# 3. Arranca el servidor local de Vite
+npm run dev
+```
+La aplicación web quedará accesible en tu navegador abriendo [http://localhost:5173](http://localhost:5173).
+
+---
+
+## Notas extras y contexto para la Evaluación (Teacher's Note)
 
 
+### Rigor en los *Technical Requirements*
+En esta práctica me he ceñido rigurosamente al objetivo: _"API Integration (GET requests only) [...] Focus strictly on implementing the read-only parts of your user stories"_.
 
-2. Technical requirements
+A lo largo de los componentes como la vista central (`HomeManagerPage`), la lista de atletas (`AthletesPage`) o la agenda de entrenamientos (`TrainingsPage`), observarás hooks reactivos integrados con llamadas al método `fetch()` apuntando estrictamente a la API que se pidió levantar vía Docker Compose. 
 
-Your work must meet the following technical requirements:
+No se introdujeron operaciones `POST`, `PUT` o `DELETE` que interfieran o adelanten indebidamente el contenido funcional planificado para la **fase 3** y se corrigieron errores cometidos en la iteración 1. El enfoque general asume proveer una base altamente descriptiva con flujos bien controlados (incluyendo sus rutas si la API arroja excepciones o `HTTP 500`).
 
-API Integration (GET requests only).
+### Refactorización y Arquitectura
 
-You must run the provided Athletics Sports Club API locally using Docker Compose. Replace your previous static JSON imports with the fetch() API to retrieve real data from the backend. Focus strictly on *implementing the read-only parts* of your user stories. For now, focus on presenting the data.
+Notarás que dejé a propósito un diagrama detallando la ruta arquitectónica en la raíz, llamado **`chm.svg` (Component Hierarchy Map)**. Éste documenta cómo refactorizamos los componentes gigantes iniciales a favor de un enfoque mucho más atómico mediante el concepto de layouts y contenedores (`Outlet`). Adicionalmente, el documento visual **`user-story-view-training.svg`** en la misma carpeta describe una métrica visual completa documentando el ciclo interactivo y técnico del proyecto hasta ahora.
 
-Endpoints.
+### Estructura de Directorios y Organización del Dominio
+El proyecto ha sido estructurado siguiendo una arquitectura **Feature-based** para favorecer el mantenimiento y evitar el acoplamiento globalizado:
 
-You must use all the necessary GET endpoints required to completely fulfill the read operations for your 4 user stories. Available endpoint bases include /athletes, /coaches, /venues, /competitions, /trainings, /seasons, and /addresses. You should utilise both list endpoints (e.g., /api/v1/athletes) and detail endpoints (e.g., /api/v1/athletes/{public_id}) as dictated by your designs.
+```text
+src/
+├── components/          # Componentes genéricos y transversales.
+│   └── ui/              # Bloques de interfaz compartidos (ej. `<ErrorMessage />`).
+├── features/            # Directorio núcleo: Cada subcarpeta encapsula su propia página y subcomponentes locales.
+│   ├── athletes/        # Dominio de Atletas (AthletesPage, AthleteList, AthleteDetail).
+│   ├── trainings/       # Dominio de Entrenamientos (TrainingsPage, TrainingList, TrainingDetail).
+│   ├── home-manager/    # Dashboard administrativo principal (Métricas cross-domain).
+│   ├── back-office/     # Shell del panel interno (Layout, NavBar lateral).
+│   └── public-landing/  # [Auth] Área pública pre-login.
+│       ├── login/           
+│       └── recover-password/
+├── lib/                 # Lógica de abstracción agnóstica de la vista (Utils).
+│   └── api.ts           # Handler HTTP centralizado (Ejecuta fetch y gestiona excepciones).
+├── App.tsx              # Componente Wrapper de mayor nivel.
+└── main.tsx             # Punto de montaje estricto (React DOM Root).
+```
 
-Component expansion.
-
-Add at least 3 new functional components to your project to accommodate the new user stories and data presentation.
-
-State and asynchrony.
-
-Use useEffect and useState, add loading and error states:
-
-    Use useEffect to trigger your fetch calls when the relevant components mount.
-    Use useState to store the incoming JSON data.
-    You must implement a loading state (e.g., showing a spinner, skeleton loader, or "Loading..." text while waiting for the API response) and an error state (e.g., a gracefully designed error message if the fetch fails or the Docker container is not running).
-
-Mandatory routing.
-
-Implement react-router-dom to create actual navigation. Your app must have at least two distinct views (e.g., a global navigation bar that switches between /athletes and /competitions, or clicking on a list item to navigate to a detail page).
-
-Component quality and clean code.
-
-React code must follow industry best practices for readability and separation of concerns.
-
-    No spaguetti code. Do not put all your logic, styling, and UI into a single massive component. Break complex UIs into smaller, reusable child components.
-    Keep JSX clean. The return (...) block of your component should primarily contain UI. Complex JavaScript logic, data filtering, and event handler functions should be defined above the return statement.
-    Styling practices. Avoid heavy use of inline styles, e.g., style={{ color: 'red', margin: '10px' }}. Use standard external CSS files, CSS modules, or a consistent styling framework to keep your component files clean.
-    Semantic HTML. Avoid a div soup. Use semantic HTML tags (<header>, <main>, <section>, <nav>, <button>) inside your JSX.
-
-## Data quiality requirements
-
-- Successfully adds 3 or more new functional components. Maintains excellent, modular structure and clear separation of concerns across the whole app.
-- Seamlessly replaces mock data with fetch() GET requests across all necessary endpoints. Correctly extracts and utilizes the JSON data from the responses.
-- Gracefully handles both Loading (spinners, skeletons) and Error states (friendly messages if the API is down) using useState in the relevant components.
-- App runs flawlessly following the updated README.md. ZIP strictly excludes node_modules and files are named perfectly.
-- Code is generally well-structured. A few components might be slightly too long, or there is minor use of inline styling, but it remains readable and easy to follow.
+**Flujo de las llamadas HTTP (Fetching local):**
+Las peticiones al backend están resueltas mediante una estrategia estándar descentralizada coordinada a través de un handler común:
+1. Las llamadas a la red se originan dentro de funciones asíncronas en los bloques `useEffect` a nivel de componente "Page" (los componentes de enrutamiento principal de cada Feature).
+2. Internamente consumen el módulo `lib/api.ts` invocando el genérico universal `apiRequest<T>('/ruta')`.
+3. Una vez se resuelve la promesa o falla (arrojando un error instanciado de la clase custom `ApiError`), los manejadores capturan la excepción e informan a la capa UI (empleando tipados estandarizados). Todo sin librerías de terceros (vanilla `fetch()`).
