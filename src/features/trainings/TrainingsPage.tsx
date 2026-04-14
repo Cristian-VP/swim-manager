@@ -1,3 +1,9 @@
+/**
+ * @file TrainingsPage.tsx
+ * @description Vista principal del módulo de Programación de Entrenamientos.
+ * Obtiene las sesiones planificadas del API e implementa un patrón Maestro-Detalle,
+ * permitiendo seleccionar un entrenamiento concreto para visualizar sus datos ampliados.
+ */
 import { useEffect, useState } from 'react'
 import { apiErrorMessage, apiRequest } from '../../lib/api'
 import { ErrorMessage } from '../../components/ui/ErrorMessage'

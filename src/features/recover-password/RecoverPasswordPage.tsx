@@ -1,3 +1,9 @@
+/**
+ * @file RecoverPasswordPage.tsx
+ * @description Vista del flujo de recuperación de contraseña.
+ * Es una interfaz puramente visual (UI-only) que valida el formato de email y simula
+ * un proceso de envío, ideal para la demostración de la iteración actual.
+ */
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'

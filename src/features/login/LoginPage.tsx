@@ -1,3 +1,9 @@
+/**
+ * @file LoginPage.tsx
+ * @description Vista de inicio de sesión simulada para entorno de pruebas/demo.
+ * Contiene un formulario de autenticación con validación en el cliente, pero sin 
+ * integración real de backend, permitiendo acceso fijo con credenciales por defecto.
+ */
 import { useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'

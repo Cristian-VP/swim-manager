@@ -1,3 +1,11 @@
+/**
+ * @file BackOfficeSideNav.tsx
+ * @description Componente de navegación lateral (Sidebar) para el panel de administración (Back Office).
+ * Maneja la navegación entre las diferentes vistas de gestión (entrenamientos, atletas, etc.)
+ * y proporciona la funcionalidad de cierre de sesión simulada.
+ * Hace uso de enlaces reactivos (NavLink) para indicar la vista activa y muestra
+ * métricas/badges provenientes de la configuración de navegación.
+ */
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { ACTIVE_BACKOFFICE_NAV, PASSIVE_BACKOFFICE_NAV } from './backOfficeNav'

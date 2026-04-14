@@ -1,3 +1,9 @@
+/**
+ * @file PublicLandingPage.tsx
+ * @description Página de destino principal (Landing Page) de la aplicación orientada al público.
+ * Funciona como vitrina promocional del club y proporciona el punto de entrada principal
+ * a la plataforma (tanto para información como para inicio de sesión).
+ */
 import { Link } from 'react-router-dom'
 import landingHeroImage from '../../assets/talahria-jensen-F20aPGvyhrQ-unsplash.jpg'
 

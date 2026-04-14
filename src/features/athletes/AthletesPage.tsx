@@ -1,3 +1,9 @@
+/**
+ * @file AthletesPage.tsx
+ * @description Vista principal del directorio de Atletas.
+ * Coordina la carga de datos desde el API (solo-lectura) y maneja el estado de selección,
+ * dividiendo la interfaz en un listado (AthleteList) y un panel de detalle (AthleteDetail).
+ */
 import { useEffect, useState } from 'react'
 import { apiErrorMessage, apiRequest } from '../../lib/api'
 import { AthleteList, type AthleteListItem } from './components/AthleteList'

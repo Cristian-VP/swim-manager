@@ -1,3 +1,9 @@
+/**
+ * @file HomeManagerPage.tsx
+ * @description Panel principal o "Dashboard" que los gerentes ven al ingresar al Back Office.
+ * Agrega y muestra métricas clave combinando múltiples endpoints (atletas y entrenamientos),
+ * presentando la información más relevante de un vistazo.
+ */
 import { useEffect, useState } from 'react'
 import { apiRequest } from '../../lib/api'
 import type { AthleteListItem } from '../athletes/components/AthleteList'

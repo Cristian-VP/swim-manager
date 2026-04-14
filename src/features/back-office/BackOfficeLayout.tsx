@@ -1,3 +1,9 @@
+/**
+ * @file BackOfficeLayout.tsx
+ * @description Estructura de diseño base para el entorno de administración ("Back Office").
+ * Organiza la vista usando un diseño de cuadrícula (grid) que incluye la barra lateral de navegación
+ * fija a la izquierda y el área de contenido principal a la derecha usando un Outlet de React Router.
+ */
 import { Outlet } from 'react-router-dom'
 
 import BackOfficeSideNav from './BackOfficeSideNav'
