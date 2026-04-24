@@ -10,9 +10,10 @@ type Props = {
   competitions: CompetitionListItem[]
   selectedId: string | null
   onSelect: (id: string) => void
+  onCreateNew: () => void
 }
 
-export function CompetitionCalendar({ competitions, selectedId, onSelect }: Props) {
+export function CompetitionCalendar({ competitions, selectedId, onSelect, onCreateNew }: Props) {
   const [currentDate, setCurrentDate] = useState(new Date())
 
   useEffect(() => {
@@ -85,20 +86,33 @@ export function CompetitionCalendar({ competitions, selectedId, onSelect }: Prop
 
   return (
     <article className="rounded-2xl border border-[var(--color-border)] bg-white p-4 shadow-sm w-full font-sans">
-      <header className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-black text-slate-800">{monthName} {year}</h2>
-        <div className="flex space-x-1">
-          <button onClick={prevMonth} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 transition-colors">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <button onClick={nextMonth} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 transition-colors">
-            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+      <header className="mb-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-lg font-black text-slate-800">{monthName} {year}</h2>
+          <div className="flex space-x-1">
+            <button onClick={prevMonth} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 transition-colors" aria-label="Mes anterior">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            <button onClick={nextMonth} className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 transition-colors" aria-label="Mes siguiente">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
         </div>
+        <button
+          type="button"
+          id="btn-new-competition"
+          onClick={onCreateNew}
+          className="w-full flex items-center justify-center gap-2 rounded-xl border border-dashed border-[var(--color-brand-primary)] px-3 py-2 text-xs font-semibold text-[var(--color-brand-primary)] hover:bg-[var(--color-brand-primary-soft)] transition-colors"
+        >
+          <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          </svg>
+          Nueva Competición
+        </button>
       </header>
 
       <div className="grid grid-cols-7 gap-1 mb-2 text-center text-xs font-semibold text-slate-400">

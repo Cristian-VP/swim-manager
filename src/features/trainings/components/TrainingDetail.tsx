@@ -5,8 +5,9 @@ import { LoadingSpinner } from '../../../components/ui/LoadingSpinner'
 
 type RelPerson = {
   public_id: string
-  first_name: string
-  last_name: string
+  first_name?: string
+  last_name?: string
+  display_name?: string
 }
 
 type TrainingApiDetail = {
@@ -30,9 +31,10 @@ type TrainingApiDetail = {
 type Props = {
   publicId: string
   onClose: () => void
+  onEdit: () => void
 }
 
-export function TrainingDetail({ publicId, onClose }: Props) {
+export function TrainingDetail({ publicId, onClose, onEdit }: Props) {
   const [training, setTraining] = useState<TrainingApiDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -117,7 +119,7 @@ export function TrainingDetail({ publicId, onClose }: Props) {
             <ul className="text-sm space-y-1">
               {training.coaches.map(c => (
                 <li key={c.public_id} className="flex items-center before:content-['•'] before:mr-2 before:text-slate-400">
-                  {c.first_name} {c.last_name}
+                  {c.display_name || `${c.first_name} ${c.last_name}`.trim()}
                 </li>
               ))}
             </ul>
@@ -132,7 +134,7 @@ export function TrainingDetail({ publicId, onClose }: Props) {
             <ul className="text-sm space-y-1 max-h-32 overflow-y-auto pr-1">
               {training.athletes.map(a => (
                 <li key={a.public_id} className="flex items-center before:content-['•'] before:mr-2 before:text-slate-400">
-                  {a.first_name} {a.last_name}
+                  {a.display_name || `${a.first_name} ${a.last_name}`.trim()}
                 </li>
               ))}
             </ul>
@@ -142,13 +144,20 @@ export function TrainingDetail({ publicId, onClose }: Props) {
         </div>
       </div>
 
-      <div className="pt-2 border-t border-slate-200">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
         >
-          Cerrar detalle
+          Cerrar
+        </button>
+        <button
+          type="button"
+          onClick={onEdit}
+          className="rounded-xl bg-[var(--color-brand-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-brand-primary-hover)] transition-colors"
+        >
+          Editar
         </button>
       </div>
     </div>

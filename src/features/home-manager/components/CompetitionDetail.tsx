@@ -9,15 +9,16 @@ export type CompetitionApiDetail = {
   date: string
   season: { public_id: string; name: string }
   venue: { public_id: string; name: string; venue_type: string; indoor?: boolean } | null
-  coaches: { public_id: string; first_name: string; last_name: string; certification?: string }[]
-  athletes: { public_id: string; first_name: string; last_name: string }[]
+  coaches: { public_id: string; first_name?: string; last_name?: string; display_name?: string; certification?: string }[]
+  athletes: { public_id: string; first_name?: string; last_name?: string; display_name?: string }[]
 }
 
 type Props = {
   competitionId: string | null
+  onRequestDelete: (id: string) => void
 }
 
-export function CompetitionDetail({ competitionId }: Props) {
+export function CompetitionDetail({ competitionId, onRequestDelete }: Props) {
   const [detail, setDetail] = useState<CompetitionApiDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -128,7 +129,7 @@ export function CompetitionDetail({ competitionId }: Props) {
               <ul className="space-y-2">
                 {detail.coaches.map(coach => (
                   <li key={coach.public_id} className="flex items-center justify-between rounded bg-white p-2 text-sm shadow-sm border border-slate-100">
-                    <span className="font-semibold text-slate-800">{coach.first_name} {coach.last_name}</span>
+                    <span className="font-semibold text-slate-800">{coach.display_name || `${coach.first_name} ${coach.last_name}`.trim()}</span>
                     {coach.certification && (
                       <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">{coach.certification}</span>
                     )}
@@ -141,6 +142,18 @@ export function CompetitionDetail({ competitionId }: Props) {
           </div>
         </section>
       </div>
+      <footer className="mt-auto pt-4 border-t border-slate-100 flex justify-end">
+        <button
+          type="button"
+          onClick={() => onRequestDelete(detail.public_id)}
+          className="flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+        >
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+          </svg>
+          Eliminar competición
+        </button>
+      </footer>
     </article>
   )
 }

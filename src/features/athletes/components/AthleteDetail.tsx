@@ -22,9 +22,11 @@ type AthleteApiDetail = {
 type Props = {
   publicId: string
   onClose: () => void
+  onEdit: () => void
+  onRequestDelete: () => void
 }
 
-export function AthleteDetail({ publicId, onClose }: Props) {
+export function AthleteDetail({ publicId, onClose, onEdit, onRequestDelete }: Props) {
   const [athlete, setAthlete] = useState<AthleteApiDetail | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -107,14 +109,30 @@ export function AthleteDetail({ publicId, onClose }: Props) {
         </div>
       )}
 
-      <div className="pt-4 border-t border-slate-200">
+      <div className="flex flex-wrap items-center justify-between gap-2 pt-4 border-t border-slate-200">
         <button
           type="button"
           onClick={onClose}
-          className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+          className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
         >
-          Cerrar detalle
+          Cerrar
         </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={onRequestDelete}
+            className="rounded-xl border border-red-200 px-4 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 transition-colors"
+          >
+            Eliminar
+          </button>
+          <button
+            type="button"
+            onClick={onEdit}
+            className="rounded-xl bg-[var(--color-brand-primary)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-brand-primary-hover)] transition-colors"
+          >
+            Editar
+          </button>
+        </div>
       </div>
     </div>
   )
