@@ -12,20 +12,39 @@ export class ApiError extends Error {
 }
 
 async function parseResponseBody(response: Response): Promise<unknown> {
+  if (response.status === 204) return null
+  
+  const text = await response.text()
+  if (!text) return null
+
   const contentType = response.headers.get('content-type') ?? ''
   if (contentType.includes('application/json')) {
-    return response.json()
+    try {
+      return JSON.parse(text)
+    } catch {
+      return text
+    }
   }
-  return response.text()
+  return text
 }
 
 export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const method = init?.method?.toUpperCase() || 'GET'
+  const hasBody = init?.body != null
+  const defaultHeaders: Record<string, string> = {}
+  
+  if (method !== 'GET' && method !== 'HEAD' && method !== 'DELETE') {
+      defaultHeaders['Content-Type'] = 'application/json'
+  } else if (hasBody) {
+      defaultHeaders['Content-Type'] = 'application/json'
+  }
+
   const response = await fetch(`${API_BASE}${path}`, {
+    ...init,
     headers: {
-      'Content-Type': 'application/json',
+      ...defaultHeaders,
       ...(init?.headers ?? {}),
     },
-    ...init,
   })
 
   const body = await parseResponseBody(response)
