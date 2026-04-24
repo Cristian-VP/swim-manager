@@ -1,0 +1,10 @@
+services:
+  swim-frontend:
+    build:
+      context: ..          # project root – so COPY can reach package.json, src/, etc.
+      dockerfile: docker/Dockerfile
+    container_name: swim-frontend
+    image: swim-manager-frontend:latest
+    ports:
+      - "8080:80"          # access the app at http://localhost:8080
+    restart: unless-stopped

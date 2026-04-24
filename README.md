@@ -1,52 +1,71 @@
 # Swim Manager Front-Office
 
 ## Introducción
-Swim Manager, es una herramienta administrativa enfocada dentro del caso práctico *Athletics Sports Club API*. En esta entrega correspondiente a la **Iteración 2**, se encuentra desarrollada en React (Vite) aplicando un enfoque exclusivo a las vistas de solo lectura (**GET requests only**).
+Swim Manager, es una herramienta administrativa enfocada dentro del caso práctico *Athletics Sports Club API*. En esta entrega correspondiente a la **Iteración 3**, se encuentra desarrollada en React (Vite).
 
-## Requisitos Previos 
-Asegúrate de tener instaladas las siguientes herramientas en tu sistema operativo:
-- [Node.js](https://nodejs.org/) (Versión 18+ recomendada)
-- `npm` (gestor de dependencias integrado con Node.js)
-- [Docker](https://www.docker.com/) y `docker-compose` (necesarios para aprovisionar el servidor backend de la API provista).
 
----
+## Pasos para la carga y ejecución
 
-## Pasos para la carga y ejecución local
+Esta entrega se distribuye contenerizada. No es necesario instalar Node.js localmente ni ejecutar ningún servidor de desarrollo.
 
-Para probar este código partiendo de cero, el desarrollador (o evaluador) debe realizar los siguientes pasos:
-
-Para que la interfaz de la aplicación pueda cargar datos reales (y no marcadores como "Falta por implementar"), debes mantener encendida la API oficial adjunta al caso del Club.
+Para que la interfaz de la aplicación pueda cargar datos reales, debes mantener encendida la API oficial adjunta al caso del Club.
 
 *(Nota: El frontend está configurado asumiendo que la API queda escuchando en el puerto base `http://localhost:8000/api/v1`)*.
 
-### 1. Iniciar el entorno Frontend
+### 1. Construir y arrancar el contenedor
 ```bash
-# 1. Accede a la raíz de este proyecto Frontend
-cd /ruta/hacia/swim-manager
-
-# 2. Instala todas las librerías y dependencias necesarias listadas en package.json
-npm install
-
-# 3. Arranca el servidor local de Vite
-npm run dev
+# Desde la raíz de este proyecto
+docker compose -f docker/docker-compose.yml up --build
 ```
-La aplicación web quedará accesible en tu navegador abriendo [http://localhost:5173](http://localhost:5173).
+La aplicación web quedará accesible en tu navegador abriendo [http://localhost:8080](http://localhost:8080).
+
+### 2. Parar el contenedor
+```bash
+docker compose -f docker/docker-compose.yml down
+```
+
+> **Nota técnica:** El build es multi-stage. La primera etapa (`node:22-alpine`) instala dependencias con `npm ci` y genera el bundle de producción con `npm run build`. La segunda etapa (`nginx:alpine`) sirve únicamente el contenido estático de `dist/`, sin incluir Node.js ni herramientas de desarrollo en la imagen final.
 
 ---
 
-## Notas extras y contexto para la Evaluación (Teacher's Note)
+## Operaciones CRUD implementadas
 
+Esta iteración extiende la entrega anterior incorporando las operaciones de escritura (`POST`, `PATCH`, `DELETE`) sobre los tres dominios del club. A continuación se describe qué hace cada módulo y qué verbos HTTP utiliza.
 
-### Rigor en los *Technical Requirements*
-En esta práctica me he ceñido rigurosamente al objetivo: _"API Integration (GET requests only) [...] Focus strictly on implementing the read-only parts of your user stories"_.
+### Atletas (`/people/athletes`)
 
-A lo largo de los componentes como la vista central (`HomeManagerPage`), la lista de atletas (`AthletesPage`) o la agenda de entrenamientos (`TrainingsPage`), observarás hooks reactivos integrados con llamadas al método `fetch()` apuntando estrictamente a la API que se pidió levantar vía Docker Compose. 
+| Operación | Verbo HTTP | Descripción |
+|---|---|---|
+| Listar atletas | `GET` | Carga el catálogo completo al montar la página. |
+| Ver detalle | `GET` | Obtiene todos los datos de un atleta al seleccionarlo en la lista. |
+| Crear atleta | `POST` | Formulario overlay con validación; registra un nuevo atleta. |
+| Editar atleta | `PATCH` | El mismo formulario en modo edición; actualiza nombre, especialidad, etc. |
+| Eliminar atleta | `DELETE` | Toast con cuenta atrás; la lista se actualiza en local tras confirmar. |
 
-No se introdujeron operaciones `POST`, `PUT` o `DELETE` que interfieran o adelanten indebidamente el contenido funcional planificado para la **fase 3** y se corrigieron errores cometidos en la iteración 1. El enfoque general asume proveer una base altamente descriptiva con flujos bien controlados (incluyendo sus rutas si la API arroja excepciones o `HTTP 500`).
+### Entrenamientos (`/scheduling/trainings`)
 
-### Refactorización y Arquitectura
+| Operación | Verbo HTTP | Descripción |
+|---|---|---|
+| Listar sesiones | `GET` | Carga la agenda completa al montar la página. |
+| Ver detalle | `GET` | Obtiene sede, foco y atletas convocados de la sesión seleccionada. |
+| Crear sesión | `POST` | Formulario overlay; permite asignar fecha, sede, foco y atletas. |
+| Editar sesión | `PATCH` | El mismo formulario en modo edición; actualiza los campos modificados. |
 
-Notarás que dejé a propósito un diagrama detallando la ruta arquitectónica en la raíz, llamado **`chm.svg` (Component Hierarchy Map)**. Éste documenta cómo refactorizamos los componentes gigantes iniciales a favor de un enfoque mucho más atómico mediante el concepto de layouts y contenedores (`Outlet`). Adicionalmente, el documento visual **`user-story-view-training.svg`** en la misma carpeta describe una métrica visual completa documentando el ciclo interactivo y técnico del proyecto hasta ahora.
+### Competiciones (`/scheduling/competitions`) — desde el Dashboard
+
+| Operación | Verbo HTTP | Descripción |
+|---|---|---|
+| Listar competiciones | `GET` | El calendario del dashboard carga las competiciones al arrancar. |
+| Ver detalle | `GET` | Obtiene la ficha completa al seleccionar una competición del calendario. |
+| Crear competición | `POST` | Formulario overlay accesible desde el calendario. |
+| Eliminar competición | `DELETE` | Toast con cuenta atrás; elimina la competición y actualiza el calendario. |
+
+### Mecanismo de feedback al usuario
+
+Todas las operaciones de escritura siguen el mismo patrón de respuesta en la UI:
+- **Éxito** → `<SuccessToast />`: notificación flotante que desaparece automáticamente.
+- **Error de API** → `<ErrorMessage />` inline o `<ErrorModal />` para errores críticos.
+- **Confirmación de borrado** → `<DeleteCountdownToast />`: cuenta atrás de 5 segundos con opción de cancelar antes de ejecutar el `DELETE`.
 
 ### Estructura de Directorios y Organización del Dominio
 El proyecto ha sido estructurado siguiendo una arquitectura **Feature-based** para favorecer el mantenimiento y evitar el acoplamiento globalizado:
