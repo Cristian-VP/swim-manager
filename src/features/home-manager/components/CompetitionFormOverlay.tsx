@@ -1,3 +1,9 @@
+/**
+ * @file CompetitionFormOverlay.tsx
+ * @description Formulario de pantalla completa para crear nuevas competiciones (POST).
+ * Carga temporadas, sedes, entrenadores y atletas relacionales desde la API,
+ * gestiona la validación en cliente y el feedback de errores mediante ErrorModal.
+ */
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { apiErrorMessage, apiRequest } from '../../../lib/api'
@@ -23,8 +29,6 @@ type Props = {
   onCancel: () => void
 }
 
-// ─── Validación ──────────────────────────────────────────────────────────────
-
 function emptyForm(): FormFields {
   return { name: '', date: '', season_id: '', venue_id: '', coach_ids: [], athlete_ids: [] }
 }
@@ -39,8 +43,6 @@ function validateForm(f: FormFields) {
     athlete_ids: '',
   }
 }
-
-// ─── Componentes Extra ───────────────────────────────────────────────────────
 
 function CheckboxList({ title, options, selectedIds, onChange }: { title: string, options: PersonRef[], selectedIds: string[], onChange: (ids: string[]) => void }) {
   const toggle = (id: string) => {
@@ -67,12 +69,10 @@ function CheckboxList({ title, options, selectedIds, onChange }: { title: string
   )
 }
 
-// ─── Componente Principal ────────────────────────────────────────────────────
-
 export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
   const [form, setForm] = useState<FormFields>(emptyForm())
   const [touched, setTouched] = useState(false)
-  
+
   const [seasons, setSeasons] = useState<SeasonRef[]>([])
   const [venues, setVenues] = useState<VenueRef[]>([])
   const [coaches, setCoaches] = useState<PersonRef[]>([])
@@ -81,7 +81,6 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
   const [submitting, setSubmitting] = useState(false)
   const [apiError, setApiError] = useState('')
 
-  // Cargar datos relacionales
   useEffect(() => {
     Promise.all([
       apiRequest<SeasonRef[]>('/scheduling/seasons').catch(() => []),
@@ -115,7 +114,7 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
       coach_public_ids: form.coach_ids,
       athlete_public_ids: form.athlete_ids,
     }
-    
+
     if (form.venue_id) {
       payload.venue_public_id = form.venue_id
     }
@@ -133,7 +132,6 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-white">
-      {/* ── Header ── */}
       <header className="flex items-center gap-3 border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
         <button
           type="button" onClick={onCancel} aria-label="Volver al dashboard"
@@ -149,7 +147,6 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
         </span>
       </header>
 
-      {/* ── Formulario ── */}
       <main className="flex-1 overflow-y-auto px-6 py-8">
         <form
           id="competition-form"
@@ -209,28 +206,27 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
           </fieldset>
 
           <fieldset className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-             <legend className="px-2 text-sm font-bold text-slate-500 uppercase tracking-wider">
-               Equipaje e Inscritos
-             </legend>
-             <div className="mt-4 grid gap-6 sm:grid-cols-2">
-               <CheckboxList 
-                 title="Entrenadores Coordinadores"
-                 options={coaches}
-                 selectedIds={form.coach_ids}
-                 onChange={(ids) => setField('coach_ids', ids)}
-               />
-               <CheckboxList 
-                 title="Atletas Competidores"
-                 options={athletes}
-                 selectedIds={form.athlete_ids}
-                 onChange={(ids) => setField('athlete_ids', ids)}
-               />
-             </div>
+            <legend className="px-2 text-sm font-bold text-slate-500 uppercase tracking-wider">
+              Equipaje e Inscritos
+            </legend>
+            <div className="mt-4 grid gap-6 sm:grid-cols-2">
+              <CheckboxList
+                title="Entrenadores Coordinadores"
+                options={coaches}
+                selectedIds={form.coach_ids}
+                onChange={(ids) => setField('coach_ids', ids)}
+              />
+              <CheckboxList
+                title="Atletas Competidores"
+                options={athletes}
+                selectedIds={form.athlete_ids}
+                onChange={(ids) => setField('athlete_ids', ids)}
+              />
+            </div>
           </fieldset>
         </form>
       </main>
 
-      {/* ── Footer ── */}
       <footer className="flex items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4 shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
         <button
           type="button" onClick={onCancel}
@@ -249,7 +245,7 @@ export function CompetitionFormOverlay({ onSuccess, onCancel }: Props) {
       {apiError && (
         <ErrorModal
           message={apiError}
-          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => {} } as FormEvent) }}
+          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => { } } as FormEvent) }}
           onClose={() => setApiError('')}
         />
       )}

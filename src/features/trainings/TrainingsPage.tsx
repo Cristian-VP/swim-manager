@@ -22,7 +22,7 @@ export default function TrainingsPage() {
   const [formMode, setFormMode] = useState<FormMode>(null)
   const [successMessage, setSuccessMessage] = useState('')
 
-  // ── Carga desde API ──
+
   const loadTrainings = useCallback(async () => {
     setLoading(true)
     setLoadError('')
@@ -40,7 +40,7 @@ export default function TrainingsPage() {
     loadTrainings()
   }, [loadTrainings])
 
-  // ── Handlers ──
+
   function handleFormSuccess(message: string) {
     setFormMode(null)
     setSelectedTrainingId(null)
@@ -50,7 +50,7 @@ export default function TrainingsPage() {
 
   return (
     <>
-      {/* ── Formulario Overlay tipo página ── */}
+
       {formMode !== null && (
         <TrainingFormOverlay
           mode={formMode}
@@ -61,7 +61,7 @@ export default function TrainingsPage() {
         />
       )}
 
-      {/* ── Toast de éxito ── */}
+
       {successMessage && (
         <SuccessToast
           message={successMessage}

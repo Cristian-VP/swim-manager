@@ -1,3 +1,9 @@
+/**
+ * @file TrainingFormOverlay.tsx
+ * @description Formulario de pantalla completa para crear y editar sesiones de entrenamiento.
+ * Carga temporadas, entrenadores y atletas relacionales desde la API, gestiona la validación
+ * en cliente, la navegación entre sesiones en modo edición (PATCH) y el feedback de errores.
+ */
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { apiErrorMessage, apiRequest } from '../../../lib/api'
@@ -37,8 +43,6 @@ type Props = {
   onCancel: () => void
 }
 
-// ─── Validación ──────────────────────────────────────────────────────────────
-
 function emptyForm(): FormFields {
   return { name: '', date: '', time: '00:00', focus: '', season_id: '', coach_ids: [], athlete_ids: [] }
 }
@@ -69,8 +73,6 @@ function validateForm(f: FormFields) {
   }
 }
 
-// ─── Componentes Extra ───────────────────────────────────────────────────────
-
 function CheckboxList({ title, options, selectedIds, onChange }: { title: string, options: PersonRef[], selectedIds: string[], onChange: (ids: string[]) => void }) {
   const toggle = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -96,13 +98,11 @@ function CheckboxList({ title, options, selectedIds, onChange }: { title: string
   )
 }
 
-// ─── Componente Principal ────────────────────────────────────────────────────
-
 export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, onCancel }: Props) {
   const [form, setForm] = useState<FormFields>(emptyForm())
   const [touched, setTouched] = useState(false)
   const [loadingDetail, setLoadingDetail] = useState(false)
-  
+
   const [seasons, setSeasons] = useState<SeasonRef[]>([])
   const [coaches, setCoaches] = useState<PersonRef[]>([])
   const [athletes, setAthletes] = useState<PersonRef[]>([])
@@ -112,7 +112,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [activeTrainingId, setActiveTrainingId] = useState<string | undefined>(trainingId)
 
-  // Carga opciones de relaciones (temporadas, atletas, entrenadores)
   useEffect(() => {
     Promise.all([
       apiRequest<SeasonRef[]>('/scheduling/seasons').catch(() => []),
@@ -125,7 +124,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
     })
   }, [])
 
-  // Calcula índice inicial en modo edición
   useEffect(() => {
     if (mode === 'edit' && trainingId) {
       const idx = trainings.findIndex((t) => t.public_id === trainingId)
@@ -133,7 +131,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
     }
   }, [mode, trainingId, trainings])
 
-  // Carga detalle del entrenamiento activo
   useEffect(() => {
     if (mode !== 'edit' || !activeTrainingId) return
 
@@ -141,7 +138,7 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
     setLoadingDetail(true)
     apiRequest<TrainingApiDetail>(`/scheduling/trainings/${activeTrainingId}`)
       .then((data) => { if (alive) setForm(detailToForm(data)) })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => { if (alive) setLoadingDetail(false) })
 
     return () => { alive = false }
@@ -154,7 +151,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
     ? trainings[currentIndex].name
     : 'Nueva Sesión'
 
-  // ── Navegación ──
   function navigate(dir: -1 | 1) {
     const next = currentIndex + dir
     if (next < 0 || next >= trainings.length) return
@@ -167,7 +163,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  // ── Envío ──
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setTouched(true)
@@ -200,7 +195,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-white">
-      {/* ── Header ── */}
       <header className="flex items-center gap-3 border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
         <button
           type="button"
@@ -245,7 +239,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
         </div>
       )}
 
-      {/* ── Formulario ── */}
       <main className="flex-1 overflow-y-auto px-6 py-8">
         {loadingDetail ? (
           <p className="text-sm text-slate-500">Cargando datos de la sesión...</p>
@@ -320,13 +313,13 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
                 Asignación
               </legend>
               <div className="mt-4 grid gap-6 sm:grid-cols-2">
-                <CheckboxList 
+                <CheckboxList
                   title="Entrenadores Asignados"
                   options={coaches}
                   selectedIds={form.coach_ids}
                   onChange={(ids) => setField('coach_ids', ids)}
                 />
-                <CheckboxList 
+                <CheckboxList
                   title="Atletas Convocados"
                   options={athletes}
                   selectedIds={form.athlete_ids}
@@ -338,7 +331,6 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
         )}
       </main>
 
-      {/* ── Footer ── */}
       <footer className="flex items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4 shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
         <button
           type="button" onClick={onCancel}
@@ -354,11 +346,10 @@ export function TrainingFormOverlay({ mode, trainingId, trainings, onSuccess, on
         </button>
       </footer>
 
-      {/* ── Modal de error de API ── */}
       {apiError && (
         <ErrorModal
           message={apiError}
-          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => {} } as FormEvent) }}
+          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => { } } as FormEvent) }}
           onClose={() => setApiError('')}
         />
       )}

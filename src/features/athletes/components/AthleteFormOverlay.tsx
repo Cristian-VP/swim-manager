@@ -1,3 +1,9 @@
+/**
+ * @file AthleteFormOverlay.tsx
+ * @description Formulario de pantalla completa para crear y editar atletas.
+ * Gestiona la carga del detalle vía API (PATCH), la validación en cliente,
+ * la navegación entre atletas en modo edición y el feedback de errores mediante ErrorModal.
+ */
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { apiErrorMessage, apiRequest } from '../../../lib/api'
@@ -71,7 +77,6 @@ function validateForm(f: FormFields) {
   }
 }
 
-// ─── Componente de Campo ──────────────────────────────────────────────────────
 function FormField({
   id, label, type = 'text', value, field, setField, error, required = false, placeholder = ''
 }: {
@@ -90,16 +95,15 @@ function FormField({
         onChange={(e) => setField(field, e.target.value)}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-[var(--color-brand-primary-soft)] ${
-          error ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
-        }`}
+        className={`w-full rounded-xl border px-3 py-2 text-sm outline-none transition focus:ring-2 focus:ring-[var(--color-brand-primary-soft)] ${error ? 'border-red-400 bg-red-50' : 'border-slate-200 bg-white'
+          }`}
       />
       {error && <p id={`${id}-error`} className="mt-1 text-xs text-red-600">{error}</p>}
     </label>
   )
 }
 
-// ─── Componente Principal ────────────────────────────────────────────────────
+
 
 export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCancel }: Props) {
   const [form, setForm] = useState<FormFields>(emptyForm())
@@ -110,7 +114,6 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [activeAthleteId, setActiveAthleteId] = useState<string | undefined>(athleteId)
 
-  // Calcula el índice inicial al montar en modo edición
   useEffect(() => {
     if (mode === 'edit' && athleteId) {
       const idx = athletes.findIndex((a) => a.public_id === athleteId)
@@ -126,7 +129,7 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
     setLoadingDetail(true)
     apiRequest<AthleteApiDetail>(`/people/athletes/${activeAthleteId}`)
       .then((data) => { if (alive) setForm(detailToForm(data)) })
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => { if (alive) setLoadingDetail(false) })
 
     return () => { alive = false }
@@ -139,7 +142,6 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
     ? `${athletes[currentIndex].first_name} ${athletes[currentIndex].last_name}`
     : 'Nuevo Atleta'
 
-  // ── Navegación entre atletas (modo edición) ──
   function navigate(dir: -1 | 1) {
     const next = currentIndex + dir
     if (next < 0 || next >= athletes.length) return
@@ -148,12 +150,10 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
     setTouched(false)
   }
 
-  // ── Actualiza un campo del formulario ──
   function setField(field: keyof FormFields, value: string) {
     setForm((prev) => ({ ...prev, [field]: value }))
   }
 
-  // ── Envío ──
   async function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setTouched(true)
@@ -190,7 +190,6 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
 
   return (
     <div className="fixed inset-0 z-40 flex flex-col bg-white">
-      {/* ── Header ── */}
       <header className="flex items-center gap-3 border-b border-slate-200 bg-white px-6 py-4 shadow-sm">
         <button
           type="button"
@@ -241,7 +240,6 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
         </div>
       )}
 
-      {/* ── Formulario ── */}
       <main className="flex-1 overflow-y-auto px-6 py-8">
         {loadingDetail ? (
           <p className="text-sm text-slate-500">Cargando datos del atleta...</p>
@@ -279,7 +277,6 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
         )}
       </main>
 
-      {/* ── Footer ── */}
       <footer className="flex items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4 shadow-[0_-1px_4px_rgba(0,0,0,0.06)]">
         <button
           type="button"
@@ -298,11 +295,10 @@ export function AthleteFormOverlay({ mode, athleteId, athletes, onSuccess, onCan
         </button>
       </footer>
 
-      {/* ── Modal de error de API ── */}
       {apiError && (
         <ErrorModal
           message={apiError}
-          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => {} } as FormEvent) }}
+          onRetry={() => { setApiError(''); handleSubmit({ preventDefault: () => { } } as FormEvent) }}
           onClose={() => setApiError('')}
         />
       )}

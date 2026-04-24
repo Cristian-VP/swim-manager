@@ -21,12 +21,12 @@ export default function HomeManagerPage() {
   const [loading, setLoading] = useState(true)
   const [selectedCompetitionId, setSelectedCompetitionId] = useState<string | null>(null)
 
-  // ── Estados de mutación ──
+
   const [showCompetitionForm, setShowCompetitionForm] = useState(false)
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
   const [successMessage, setSuccessMessage] = useState('')
 
-  // ── Carga de datos ──
+
   const loadCompetitions = useCallback(async () => {
     const data = await apiRequest<CompetitionListItem[]>('/scheduling/competitions').catch(() => [])
     setCompetitions(data)
@@ -56,7 +56,7 @@ export default function HomeManagerPage() {
     return () => { alive = false }
   }, [])
 
-  // ── Métricas del dashboard ──
+
   const now = new Date()
   const upcomingTrainings = trainings
     .filter((t) => new Date(t.date) >= now)
@@ -67,7 +67,7 @@ export default function HomeManagerPage() {
     ? new Date(nextTraining.date).toLocaleDateString()
     : trainings.length > 0 ? 'Sin futuros' : '--'
 
-  // ── Handlers de competiciones ──
+
   function handleCompetitionCreated(message: string) {
     setShowCompetitionForm(false)
     setSuccessMessage(message)
@@ -89,8 +89,7 @@ export default function HomeManagerPage() {
       setCompetitions((prev) => prev.filter((c) => c.public_id !== idToDelete))
       setSuccessMessage('Competición eliminada correctamente.')
     } catch (err) {
-      setSuccessMessage('') // forzamos limpieza
-      // mostramos error inline sencillo
+      setSuccessMessage('')
       alert(apiErrorMessage(err))
     }
   }
@@ -99,7 +98,7 @@ export default function HomeManagerPage() {
 
   return (
     <>
-      {/* ── Overlay de nueva competición ── */}
+
       {showCompetitionForm && (
         <CompetitionFormOverlay
           onSuccess={handleCompetitionCreated}
@@ -107,7 +106,7 @@ export default function HomeManagerPage() {
         />
       )}
 
-      {/* ── Toast de borrado con cuenta atrás ── */}
+
       {deleteTargetId && deleteTarget && (
         <DeleteCountdownToast
           label={`"${deleteTarget.name}" será eliminada permanentemente.`}
@@ -116,7 +115,7 @@ export default function HomeManagerPage() {
         />
       )}
 
-      {/* ── Toast de éxito ── */}
+
       {successMessage && (
         <SuccessToast
           message={successMessage}
@@ -125,7 +124,7 @@ export default function HomeManagerPage() {
       )}
 
       <main className="mx-auto flex w-full max-w-[85rem] flex-col gap-8 px-4 py-6 md:px-8 md:py-8">
-        {/* Header bienvenida */}
+
         <header className="rounded-3xl border border-[var(--color-border)] bg-gradient-to-br from-white via-white to-[var(--color-brand-primary-soft)]/45 p-6 shadow-sm">
           <h1 className="mt-2 text-3xl font-black text-[var(--color-brand-deep)] md:text-4xl">Bienvenid@</h1>
           <p className="mt-2 text-sm text-[var(--color-text-muted)]">
@@ -133,7 +132,7 @@ export default function HomeManagerPage() {
           </p>
         </header>
 
-        {/* Métricas */}
+
         <section className="grid gap-4 md:grid-cols-3">
           <article className="rounded-2xl border border-[var(--color-border)] bg-white p-4 shadow-sm">
             <p className="text-xs font-semibold text-[var(--color-text-muted)]">Atletas registrados</p>
@@ -166,7 +165,7 @@ export default function HomeManagerPage() {
           </article>
         </section>
 
-        {/* Calendario + detalle */}
+
         <section className="grid gap-5 lg:grid-cols-3">
           <div className="lg:col-span-1">
             <CompetitionCalendar
